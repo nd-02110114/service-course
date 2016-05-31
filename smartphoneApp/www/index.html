@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <!--<script src="js/services.js"></script>-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true&amp;language=en"></script>
+
+    <script src="./js/jquery.xdomainajax.js"> </script>
+    <script> var wp_url_admin_ajax = 'http://192.168.33.10/wp-admin/admin-ajax.php'; </script>
+    <script src="js/services.js"></script>
+    <script type="text/javascript">
+
+
+
+        var map_canvas;
+
+        function initialize_map() {
+            var map_center = new google.maps.LatLng(33.606785, 130.418314);
+            var map_options = {
+                mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'sample']}, /*表示タイプの指定*/
+                center: map_center,
+                zoom:12
+            };
+            map_canvas = new google.maps.Map(document.getElementById("map_canvas"), map_options);
+
+
+            var styleOptions =
+                    [
+                        {
+                            "featureType": "administrative",
+                            "elementType": "labels.text.fill",
+                            "stylers": [
+                                {
+                                    "color": "#444444"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "administrative.neighborhood",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "off"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "landscape",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "simplified"
+                                },
+                                {
+                                    "hue": "#ff8500"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "landscape.man_made",
+                            "elementType": "geometry.fill",
+                            "stylers": [
+                                {
+                                    "saturation": "51"
+                                },
+                                {
+                                    "visibility": "simplified"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "off"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.business",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "off"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.place_of_worship",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                },
+                                {
+                                    "hue": "#0d00ff"
+                                },
+                                {
+                                    "saturation": "52"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.place_of_worship",
+                            "elementType": "labels.text",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                },
+                                {
+                                    "hue": "#001bff"
+                                },
+                                {
+                                    "saturation": "70"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.place_of_worship",
+                            "elementType": "labels.text.fill",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.place_of_worship",
+                            "elementType": "labels.text.stroke",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                },
+                                {
+                                    "color": "#f4ff00"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.place_of_worship",
+                            "elementType": "labels.icon",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                },
+                                {
+                                    "hue": "#003eff"
+                                },
+                                {
+                                    "weight": "1.82"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "saturation": -100
+                                },
+                                {
+                                    "lightness": 45
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road",
+                            "elementType": "geometry",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road",
+                            "elementType": "geometry.stroke",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road.arterial",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "hue": "#0004ff"
+                                },
+                                {
+                                    "saturation": "77"
+                                },
+                                {
+                                    "lightness": "-5"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road.arterial",
+                            "elementType": "labels.text",
+                            "stylers": [
+                                {
+                                    "hue": "#ff0000"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road.local",
+                            "elementType": "geometry.stroke",
+                            "stylers": [
+                                {
+                                    "color": "#33c927"
+                                },
+                                {
+                                    "lightness": "50"
+                                },
+                                {
+                                    "weight": "2.20"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "road.local",
+                            "elementType": "labels.text.fill",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                },
+                                {
+                                    "hue": "#b500ff"
+                                },
+                                {
+                                    "saturation": "15"
+                                },
+                                {
+                                    "weight": "3.42"
+                                },
+                                {
+                                    "invert_lightness": true
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "transit.station.bus",
+                            "elementType": "labels.icon",
+                            "stylers": [
+                                {
+                                    "visibility": "simplified"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "transit.station.rail",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                },
+                                {
+                                    "hue": "#ff0034"
+                                },
+                                {
+                                    "saturation": "20"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "water",
+                            "elementType": "all",
+                            "stylers": [
+                                {
+                                    "color": "#75908c"
+                                },
+                                {
+                                    "visibility": "on"
+                                }
+                            ]
+                        }
+                    ];
+
+
+            var styledMapOptions = {name: '福岡市 Wifi'};
+            var sampleType = new google.maps.StyledMapType(styleOptions, styledMapOptions);
+            map_canvas.mapTypes.set('sample', sampleType);
+            map_canvas.setMapTypeId('sample');
+
+//                 var data = [
+//                    ['33.594782', '130.409871', '福岡学生交流会館'],
+//                    ['33.567529', '130.413573', '福岡市男女共同参画推進センター・アミカス'],
+//                    ['33.572835', '130.382743', 'アゴーラ福岡山の上ホテル＆スパ']
+//                ];
+//
+//                var len = data.length;
+//                for (var i = 0; i < len; i++) {
+//                    create_marker(data[i][0], data[i][1], data[i][2]);
+//
+//            }
+        }
+
+        function create_marker(lat, lng, title,id) {
+            var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E3%83%BB%7C40AAEF%7C0000FF', /*アイコンの場所*/
+                    new google.maps.Size(40, 37), /*アイコンのサイズ*/
+                    new google.maps.Point(0, 0), /*アイコンの位置*/
+                    new google.maps.Point(16, 16) // anchor
+            );
+
+            var marker_options = {
+                map: map_canvas,
+                position: new google.maps.LatLng(lat, lng),
+                zIndex: 0,
+                title: title,
+                icon: image,
+                animation: google.maps.Animation.DROP,
+                id: id
+            };
+
+            var marker = new google.maps.Marker(marker_options);
+            google.maps.event.addListener(marker, 'click', toggleBounce);
+
+
+            //     add animation
+
+            function toggleBounce() {
+
+                if (marker.getAnimation() != null) {
+                    /* アニメーション無効化 */
+                    marker.setAnimation(null);
+                } else {
+                    /* アニメーション（飛び跳ねる） */
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+
+                    //click open window
+
+                    jQuery(function ($) {
+                      $.ajax({
+                          type: 'POST',
+                          dataType: 'json',
+                          crossDomain: true,
+                          url: wp_url_admin_ajax,
+                          data: {
+                             'action': 'detail','id':marker_options['id']
+
+                },
+                success: function (response) {
+
+
+
+                    var infowindow=new google.maps.InfoWindow({
+                        /* 情報ウィンドウのオプション設定 */
+                        content: '<div class="infowindow">' +'<h4>'+
+                        response[0] +
+                        '</h4>' +
+                        '<br />' +'<p>住所：'+
+                        response[1]+'</p>'+
+                        '</div>'
+                });
+
+                    infowindow.open(map_canvas,marker);
+
+                    }
+
+
+                });
+        });
+                }
+            }
+        }
+
+
+        google.maps.event.addDomListener(window, "load", initialize_map);
+    </script>
+
+
+
+
+
+    <script src="./js/jquery.xdomainajax.js"> </script>
+    <script> var wp_url_admin_ajax = 'http://192.168.33.10/wp-admin/admin-ajax.php'; </script>
+    <script>
+        jQuery(function ($) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                crossDomain: true,
+                url: wp_url_admin_ajax,
+                data: {
+                    'action': 'tell_me'
+
+                },
+                success: function (response) {
+//
+                    var len = response.length;
+                    for (var i = 0; i < len; i++) {
+                        create_marker(response[i][3], response[i][2], response[i][1],response[i][0]);
+                    }
+
+
+                }
+            });
+        });
+    </script>
+
+
+</head>
+<body ng-app="starter">
+<!--
+  The nav bar that will be updated as we navigate between views.
+-->
+<ion-nav-bar class="bar-stable">
+    <ion-nav-back-button>
+    </ion-nav-back-button>
+</ion-nav-bar>
+<!--
+  The views will be rendered in the <ion-nav-view> directive below
+  Templates are in the /templates folder (but you could also
+  have templates inline in this html file if you'd like).
+-->
+<ion-nav-view></ion-nav-view>
+</body>
+</html>
