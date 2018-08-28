@@ -1,3 +1,3 @@
-# service-course
-インターンの課題で書いたコードを、一応残してあるリポジトリです    
-使用したフレームワークは、wordpressとionicです
+# Ajax Demo
+インターンの課題で書いたコード  
+Ionicで書かれたclientから、データサーバーとして見なしたWordpressへAjax通信を行うサンプル
